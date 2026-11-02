@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>qolls – quick polls</title>
+<meta name="description" content="Make a quick poll in seconds. No login for you or the people you ask.">
+<link rel="icon" href="data:image/png;base64,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">
+<style>
+  :root {
+    --bg: #f5f6f8; --card: #fff; --ink: #1c2230; --muted: #6b7280; --line: #e4e7ec;
+    --accent: #2563eb; --yes: #16a34a; --yesbg: #dcfce7; --err: #dc2626;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; font-family: -apple-system, system-ui, "Segoe UI", Roboto, sans-serif;
+         background: var(--bg); color: var(--ink); line-height: 1.4; }
+  .wrap { max-width: 720px; margin: 0 auto; padding: 16px; }
+  .brand { text-align: center; margin: 4px 0 14px; }
+  .brand img { width: 140px; height: auto; display: inline-block; }
+  .foot { text-align: center; color: var(--muted); font-size: 13px; margin: 8px 0 28px; }
+  .foot b { color: var(--ink); font-weight: 600; }
+  .card { background: var(--card); border: 1px solid var(--line); border-radius: 14px;
+          padding: 18px; margin-bottom: 16px; }
+  h1 { font-size: 22px; margin: 0 0 6px; }
+  h2 { font-size: 17px; margin: 0 0 12px; }
+  p { margin: 6px 0; }
+  .muted { color: var(--muted); }
+  .small { font-size: 13px; }
+  .err { color: var(--err); font-size: 14px; margin-top: 10px; }
+  label { display: block; margin: 14px 0 4px; font-size: 14px; color: var(--muted); }
+  input, textarea { width: 100%; padding: 11px 12px; border: 1px solid var(--line);
+                    border-radius: 10px; font: inherit; font-size: 16px; background: #fff; color: var(--ink); }
+  textarea { min-height: 100px; resize: vertical; }
+  button, a.btn { display: inline-block; background: var(--accent); color: #fff; border: 0;
+                  border-radius: 10px; padding: 10px 16px; font: inherit; font-weight: 600;
+                  cursor: pointer; text-decoration: none; font-size: 15px; text-align: center; }
+  .ghost { background: transparent !important; color: var(--accent) !important;
+           border: 1px solid var(--accent) !important; }
+  .sm { padding: 7px 11px; font-size: 14px; }
+  button.link { background: none; color: var(--accent); padding: 6px 0; font-weight: 500; }
+  button:disabled { opacity: .55; cursor: default; }
+  .big { width: 100%; padding: 14px; font-size: 17px; margin-top: 16px; }
+  .row { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+  .top { display: flex; justify-content: space-between; align-items: baseline; gap: 10px;
+         margin: 4px 2px 14px; flex-wrap: wrap; }
+
+  .choices { display: flex; flex-direction: column; gap: 10px; margin-top: 8px; }
+  .choice { display: flex; align-items: center; gap: 12px; width: 100%; text-align: left;
+            background: #fff; color: var(--ink); border: 2px solid var(--line); border-radius: 12px;
+            padding: 14px; font-weight: 500; font-size: 16px; }
+  .choice .box { width: 26px; height: 26px; border-radius: 7px; border: 2px solid #c4c9d2;
+                 display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+                 font-weight: 800; color: #fff; }
+  .choice.on { border-color: var(--yes); background: var(--yesbg); }
+  .choice.on .box { background: var(--yes); border-color: var(--yes); }
+
+  .chart { width: 100%; height: auto; display: block; border-radius: 10px; }
+  .legend { margin-top: 10px; font-size: 14px; }
+  .legend div { display: flex; justify-content: space-between; gap: 10px; padding: 5px 0;
+                border-bottom: 1px solid var(--line); }
+  .legend div:last-child { border-bottom: 0; }
+  .legend .best { color: var(--yes); font-weight: 700; }
+
+  .scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+  table { border-collapse: collapse; width: 100%; font-size: 14px; }
+  th, td { border-bottom: 1px solid var(--line); padding: 8px 10px; text-align: center; white-space: nowrap; }
+  th { font-size: 13px; }
+  th:first-child, td:first-child { text-align: left; position: sticky; left: 0; background: var(--card); }
+  td.y { background: var(--yesbg); color: var(--yes); font-weight: 700; }
+  td.n { color: #c4c9d2; }
+  tfoot td { font-weight: 700; border-bottom: 0; }
+
+  .person { display: flex; justify-content: space-between; align-items: center; gap: 10px;
+            padding: 12px 0; border-bottom: 1px solid var(--line); flex-wrap: wrap; }
+  .chip { font-size: 12px; border-radius: 20px; padding: 2px 8px; background: var(--line);
+          color: var(--muted); margin-left: 6px; font-weight: 500; }
+  .chip.ok { background: var(--yesbg); color: var(--yes); }
+  .pollrow { display: flex; justify-content: space-between; align-items: center; gap: 10px;
+             padding: 12px 0; border-bottom: 1px solid var(--line); }
+  .pollrow:last-child { border-bottom: 0; }
+  #toast { position: fixed; left: 50%; bottom: 24px; transform: translateX(-50%);
+           background: var(--ink); color: #fff; padding: 10px 16px; border-radius: 10px;
+           font-size: 14px; opacity: 0; transition: opacity .2s; pointer-events: none; max-width: 90vw; }
+  #toast.show { opacity: 1; }
+  .erow { display: flex; gap: 8px; align-items: center; margin-top: 8px; }
+  .erow input { flex: 1; min-width: 0; }
+  .erow .chip { margin: 0; white-space: nowrap; }
+  .hero { text-align: center; padding: 26px 20px; }
+  .hero h1 { font-size: 26px; margin-bottom: 10px; }
+  .hero p { max-width: 520px; margin: 8px auto; }
+  .steps { margin: 0; padding-left: 22px; }
+  .steps li { margin: 10px 0; }
+</style>
+<style>
+  .pill { display: inline-block; background: #eef2ff; color: #3730a3; border-radius: 20px;
+          padding: 5px 11px; font-size: 13px; font-weight: 600; margin: 3px 4px 3px 0; }
+  .pill.warn { background: #fef3c7; color: #92400e; }
+  .pill.off { background: #fee2e2; color: #991b1b; }
+  .linkbox { display: flex; gap: 8px; align-items: center; margin-top: 6px; }
+  .linkbox input { flex: 1; min-width: 0; font-weight: 600; color: var(--accent); }
+  .note { background: #f8fafc; border: 1px dashed var(--line); border-radius: 10px; padding: 10px 12px;
+          font-size: 14px; color: var(--muted); margin-top: 12px; }
+  .center { text-align: center; }
+  .recent a { color: var(--accent); text-decoration: none; font-weight: 500; }
+  .hidden { display: none; }
+
+  /* Dark grey page so the logo pops; cards stay light for easy reading */
+  body { background: #2b2d31; }
+  .card { border-color: #3a3d44; box-shadow: 0 2px 10px rgba(0,0,0,.25); }
+  .brand { margin: 10px 0 18px; }
+  .foot { color: #9ca3af; }
+  .foot b { color: #f3f4f6; }
+  #app > .center button.link { color: #93c5fd; }
+  #app > p.muted { color: #b8bec9; }
+  #app > p.muted a { color: #93c5fd; }
+  #toast { background: #111827; border: 1px solid #4b5563; }
+  .foot .price { margin-top: 6px; font-size: 12px; font-style: italic; color: #9ca3af; }
+
+  /* "Other" option */
+  .check { display: flex; gap: 10px; align-items: flex-start; margin-top: 14px; font-size: 15px;
+           color: var(--ink); cursor: pointer; }
+  .check input { width: 20px; height: 20px; margin: 1px 0 0; flex-shrink: 0; accent-color: var(--accent); }
+  #oth { margin-top: 8px; }
+  .others div { padding: 8px 0; border-bottom: 1px solid var(--line); font-size: 15px; }
+  .others div:last-child { border-bottom: 0; }
+  .others b { font-weight: 600; }
+  td.o { text-align: left; color: var(--ink); max-width: 180px; overflow: hidden; text-overflow: ellipsis; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="brand"><img alt="qolls" width="140" height="84" src="data:image/png;base64,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"></div>
+  <div id="app"><div class="card muted">Loading…</div></div>
+  <div class="foot">Created by <b>APG</b> using Claude<div class="price">It will be free forever, and $49.99 a year after that.</div></div>
+</div>
+<div id="toast"></div>
+
+<script>
+// Safety net: show any script error on the page instead of a stuck "Loading…".
+window.addEventListener('error', function (e) {
+  var a = document.getElementById('app');
+  if (a) a.innerHTML = '<div class="card"><h2>Something went wrong</h2><p class="muted small">' +
+    String((e && e.message) || e).replace(/[<&]/g, '') + '</p><p class="muted small">Please reload the page.</p></div>';
+});
+</script>
+<script>
+(function () {   // everything in its own scope, so names can't clash with Google's page scripts
+const API = 'https://script.google.com/macros/s/AKfycbxUcp2_GixJhfZg8TT4kMh0sqne_OmmBQoIpxcckxTJ-4XqghxRdSO88SaKkrerA34/exec';
+const BOOT = (() => {
+  const q = new URLSearchParams(location.search);
+  const id = String(q.get('q') || '').replace(/[^a-z0-9]/g, '').slice(0, 20);
+  return { mode: id ? (q.get('v') === 'r' ? 'results' : 'vote') : 'create', q: id, done: q.get('done') === '1',
+           base: location.origin + location.pathname, mainShort: '' };
+})();
+const app = document.getElementById('app');
+const enc = encodeURIComponent;
+const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g,
+  c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+// Talk to the Google script in the background. credentials: 'omit' = no Google cookies are sent,
+// so being signed in to one, several or no Google accounts never matters.
+async function call(fn, ...args) {
+  let lastErr;
+  for (let attempt = 0; attempt < 3; attempt++) {
+    let r;
+    try {
+      r = await fetch(API, { method: 'POST', credentials: 'omit', redirect: 'follow', cache: 'no-store',
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify({ fn: fn, args: args }) });
+    } catch (e) { lastErr = new Error('Could not reach qolls. Check your connection and try again.'); }
+    if (r) {
+      let j;
+      try { j = await r.json(); } catch (e) { lastErr = new Error('qolls is busy. Please try again.'); }
+      if (j) { if (j.error) throw new Error(j.error); return j.result; }
+    }
+    await new Promise(ok => setTimeout(ok, 600 * (attempt + 1)));
+  }
+  throw lastErr;
+}
+const errMsg = e => String(e && e.message ? e.message : e).replace(/^(Exception|Error):\s*/, '');
+const val = id => (document.getElementById(id) || {}).value || '';
+const store = {
+  get(k) { try { return localStorage.getItem(k) || ''; } catch (e) { return ''; } },
+  set(k, v) { try { localStorage.setItem(k, v); } catch (e) {} }
+};
+function toast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.classList.add('show');
+  clearTimeout(toast._t); toast._t = setTimeout(() => t.classList.remove('show'), 3000);
+}
+const when = ms => new Date(ms).toLocaleString([], { weekday: 'short', month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' });
+const day = ms => new Date(ms).toLocaleDateString([], { weekday: 'short', month: 'short', day: 'numeric' });
+
+// One random id per phone/browser, so the same phone can change its answer.
+const DEVICE = (() => {
+  let d = store.get('qq_device');
+  if (!d) { d = (Date.now().toString(36) + Math.random().toString(36).slice(2, 12)).replace(/[^a-z0-9]/g, ''); store.set('qq_device', d); }
+  return d;
+})();
+
+const pollPage = () => BOOT.base + '?q=' + BOOT.q;
+const resultsPage = () => BOOT.base + '?q=' + BOOT.q + '&v=r';
+
+/* ===================== Results (chart + table) ===================== */
+
+function best(t) { const m = Math.max(0, ...t); return t.map(x => m > 0 && x === m); }
+
+function chartSvg(options, tallies, total) {
+  const W = 400, H = 290, L = 34, R = 10, T = 52, B = 50;
+  const n = options.length, top = best(tallies);
+  const maxY = Math.max(1, total, ...tallies);
+  const step = maxY <= 5 ? 1 : maxY <= 12 ? 2 : Math.ceil(maxY / 6);
+  const ph = H - T - B, pw = W - L - R, slot = pw / n, bw = Math.min(56, slot * 0.66);
+  const y = v => T + ph - (v / maxY) * ph;
+  const font = 'font-family="-apple-system,Segoe UI,Roboto,Arial,sans-serif"';
+  let s = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${W} ${H}" width="${W}" height="${H}">` +
+    `<rect width="${W}" height="${H}" fill="#ffffff"/>` +
+    `<text x="${L}" y="20" ${font} font-size="14" font-weight="600" fill="#1c2230">Yes votes · ${total} response${total === 1 ? '' : 's'}</text>`;
+  for (let v = 0; v <= maxY; v += step) {
+    s += `<line x1="${L}" x2="${W - R}" y1="${y(v)}" y2="${y(v)}" stroke="#e4e7ec"/>` +
+      `<text x="${L - 8}" y="${y(v) + 4}" ${font} font-size="13" fill="#6b7280" text-anchor="end">${v}</text>`;
+  }
+  tallies.forEach((t, i) => {
+    const cx = L + slot * i + slot / 2;
+    if (t > 0) s += `<rect x="${cx - bw / 2}" y="${y(t)}" width="${bw}" height="${(t / maxY) * ph}" rx="5" fill="${top[i] ? '#16a34a' : '#93c5fd'}"/>`;
+    s += `<text x="${cx}" y="${y(t) - 8}" ${font} font-size="16" font-weight="700" fill="#1c2230" text-anchor="middle">${t}</text>` +
+      `<text x="${cx}" y="${H - B + 22}" ${font} font-size="16" font-weight="600" fill="${top[i] ? '#16a34a' : '#1c2230'}" text-anchor="middle">${i + 1}${top[i] ? ' ★' : ''}</text>`;
+  });
+  return s + `<text x="${L + pw / 2}" y="${H - 8}" ${font} font-size="12" fill="#6b7280" text-anchor="middle">Option number (see list below)</text></svg>`;
+}
+
+function paintChart(svg) {
+  const img = document.getElementById('chartimg');
+  if (!img) return;
+  const src = 'data:image/svg+xml;charset=utf-8,' + enc(svg);
+  img.src = src;
+  const tmp = new Image();
+  tmp.onload = () => {
+    try {
+      const c = document.createElement('canvas');
+      c.width = tmp.width * 3 || 1200; c.height = tmp.height * 3 || 870;
+      c.getContext('2d').drawImage(tmp, 0, 0, c.width, c.height);
+      img.src = c.toDataURL('image/png');
+      const dl = document.getElementById('chartdl');
+      if (dl) { dl.href = img.src; dl.style.display = ''; }
+    } catch (e) { /* keep the SVG */ }
+  };
+  tmp.src = src;
+}
+
+function resultsHtml(d) {
+  const top = best(d.tallies);
+  const legend = d.options.map((o, i) =>
+    `<div class="${top[i] ? 'best' : ''}"><span>${i + 1}. ${esc(o)}${top[i] ? ' ★' : ''}</span><span>${d.tallies[i]}</span></div>`).join('');
+  const others = d.allowOther ? d.responses.filter(r => r.other) : [];
+  const oCol = d.allowOther;
+  const grid = d.responses.length ? `<div class="scroll"><table>
+      <thead><tr><th>Name</th>${d.options.map((o, i) => `<th title="${esc(o)}">${i + 1}</th>`).join('')}${oCol ? '<th>Other</th>' : ''}</tr></thead>
+      <tbody>${d.responses.map(r => `<tr><td>${esc(r.name)}</td>${r.answers.map(a =>
+        `<td class="${a ? 'y' : 'n'}">${a ? '✓' : '–'}</td>`).join('')}${oCol ? `<td class="o" title="${esc(r.other)}">${r.other ? esc(r.other) : '<span class="muted">–</span>'}</td>` : ''}</tr>`).join('')}</tbody>
+      <tfoot><tr><td>Total</td>${d.tallies.map(t => `<td>${t}</td>`).join('')}${oCol ? `<td class="o">${others.length}</td>` : ''}</tr></tfoot>
+    </table></div>` : '<p class="muted">No answers yet.</p>';
+  const otherCard = d.allowOther ? `<div class="card"><h2>Other suggestions${others.length ? ' (' + others.length + ')' : ''}</h2>
+      ${others.length ? `<div class="others">${others.map(r => `<div><b>${esc(r.name)}:</b> ${esc(r.other)}</div>`).join('')}</div>`
+                      : '<p class="muted">No one has suggested anything else yet.</p>'}</div>` : '';
+  return `<div class="card"><h2>Current results</h2>
+      <img id="chartimg" class="chart" alt="Bar chart of yes votes per option">
+      <div class="row" style="margin-top:8px"><a id="chartdl" class="btn ghost sm" download="qoll-results.png" style="display:none">Save chart image</a></div>
+      <div class="legend">${legend}</div></div>
+    ${otherCard}
+    <div class="card"><h2>Who picked what</h2>${grid}</div>`;
+}
+
+function timing(d) {
+  return d.open
+    ? `<span class="pill warn">Open for answers until ${esc(when(d.closes))}</span><span class="pill">Results kept until ${esc(day(d.expires))}</span>`
+    : `<span class="pill off">Closed ${esc(when(d.closes))}</span><span class="pill">Results kept until ${esc(day(d.expires))}</span>`;
+}
+
+function goneCard() {
+  return `<div class="card center"><h1>This qoll is gone</h1>
+    <p class="muted">Qolls accept answers for 24 hours, and their results are deleted after 7 days. This one has expired, or the link is wrong.</p>
+    <a class="btn big" href="${esc(BOOT.base)}">Make a new qoll</a></div>`;
+}
+function showError(e) {
+  const m = errMsg(e);
+  app.innerHTML = m === 'GONE' ? goneCard() : `<div class="card"><h2>Something went wrong</h2><p>${esc(m)}</p></div>`;
+}
+
+function shareButtons(title, link) {
+  const msg = `Quick poll: "${title}". Tap to answer (no login, open for 24 hours):\n${link}`;
+  return `<div class="row" style="margin-top:10px">
+    <button class="sm" data-act="copy" data-text="${esc(link)}">Copy link</button>
+    <a class="btn sm" href="sms:?&body=${enc(msg)}">Text</a>
+    <a class="btn sm" href="https://wa.me/?text=${enc(msg)}" target="_blank">WhatsApp</a>
+    <a class="btn sm" href="mailto:?subject=${enc(title)}&body=${enc(msg)}">Email</a>
+    ${navigator.share ? `<button class="ghost sm" data-act="share" data-title="${esc(title)}" data-text="${esc(msg)}">More…</button>` : ''}
+  </div>`;
+}
+
+/* ===================== Create page ===================== */
+
+const C = { busy: false, err: '', form: { title: '', desc: '', opts: '', other: true } };
+
+function recentQolls() {
+  let list = [];
+  try { list = JSON.parse(store.get('qq_mine') || '[]'); } catch (e) {}
+  return list.filter(x => x.expires > Date.now());
+}
+
+function renderCreate() {
+  const f = C.form, mine = recentQolls();
+  app.innerHTML = `<div class="card">
+      <h1>Make a qoll</h1>
+      <p class="muted">A quick poll to find a time that works. No login for you or the people you ask.</p>
+      <div><span class="pill warn">Open for answers for 24 hours</span><span class="pill">Results kept 7 days, then deleted</span></div>
+      <label for="ft">What's it for?</label>
+      <input id="ft" maxlength="100" placeholder="Coffee catch-up" value="${esc(f.title)}">
+      <label for="fd">Description (optional)</label>
+      <textarea id="fd" maxlength="400" style="min-height:70px" placeholder="Where, how long, anything people should know">${esc(f.desc)}</textarea>
+      <label for="fo">Time slots or choices, one per line</label>
+      <textarea id="fo" placeholder="Tue 10am&#10;Tue 3pm&#10;Wed 12pm">${esc(f.opts)}</textarea>
+      <label class="check"><input type="checkbox" id="fx" ${f.other ? 'checked' : ''}>
+        <span>Add an <b>Other</b> option, so people can type their own suggestion</span></label>
+      ${C.err ? `<p class="err">${esc(C.err)}</p>` : ''}
+      <button class="big" data-act="create" ${C.busy ? 'disabled' : ''}>${C.busy ? 'Creating…' : 'Create qoll'}</button>
+    </div>
+    ${mine.length ? `<div class="card recent"><h2>Qolls you made on this phone</h2>${mine.map(x => `
+      <div class="pollrow"><div><b>${esc(x.title)}</b><div class="muted small">${x.closes > Date.now() ? 'Open until ' + esc(when(x.closes)) : 'Closed · results until ' + esc(day(x.expires))}</div></div>
+      <a class="btn ghost sm" href="${esc(x.resultsUrl)}">Results</a></div>`).join('')}</div>` : ''}
+    <p class="muted small center" id="sharepg">${shareLine()}</p>`;
+}
+function shareLine() {
+  return BOOT.mainShort ? `Share this page: <a href="${esc(BOOT.mainShort)}">${esc(BOOT.mainShort.split('://').pop())}</a>` : '';
+}
+
+function renderCreated(d) {
+  app.innerHTML = `<div class="card">
+      <h1>Your qoll is ready 🎉</h1>
+      <p><b>${esc(d.title)}</b></p>
+      <div>${timing(d)}</div>
+      <h2 style="margin-top:18px">1. Send this link to everyone</h2>
+      <div class="linkbox"><input readonly value="${esc(d.pollUrl)}" onclick="this.select()"></div>
+      ${shareButtons(d.title, d.pollUrl)}
+      <h2 style="margin-top:22px">2. Keep this link to see the results</h2>
+      <div class="linkbox"><input readonly value="${esc(d.resultsUrl)}" onclick="this.select()"></div>
+      <div class="row" style="margin-top:10px">
+        <button class="ghost sm" data-act="copy" data-text="${esc(d.resultsUrl)}">Copy results link</button>
+        <a class="btn ghost sm" href="${esc(d.resultsUrl)}">Open results</a>
+      </div>
+      <div class="note">Answers are accepted until <b>${esc(when(d.closes))}</b> (24 hours). Everyone can see the results until <b>${esc(day(d.expires))}</b>; after 7 days this qoll and all its answers are deleted.</div>
+    </div>
+    <div class="center"><button class="link" data-act="again">Make another qoll</button></div>`;
+}
+
+/* ===================== Vote page ===================== */
+
+const V = { d: null, picks: [], name: '', busy: false, err: '', peek: false, otherOn: false, other: '' };
+
+function renderVote() {
+  const d = V.d;
+  if (!d.open) {   // closed: nothing to answer, just show the results
+    app.innerHTML = `<div class="card"><h1>${esc(d.title)}</h1>${d.description ? `<p class="muted">${esc(d.description)}</p>` : ''}
+        <div>${timing(d)}</div><p style="margin-top:10px">This qoll has closed and isn't taking answers any more.</p></div>` + resultsHtml(d);
+    paintChart(chartSvg(d.options, d.tallies, d.responses.length));
+    return;
+  }
+  app.innerHTML = `<div class="card"><h1>${esc(d.title)}</h1>${d.description ? `<p class="muted">${esc(d.description)}</p>` : ''}
+      <div>${timing(d)}</div></div>
+    <div class="card">
+      <label for="nm" style="margin-top:0">What would you like to be called? <span class="small">(your name, or a made-up one)</span></label>
+      <input id="nm" maxlength="40" autocomplete="nickname" placeholder="e.g. Coffee Fan" value="${esc(V.name)}">
+      <p class="muted" style="margin-top:14px">Tap every option that works for you:</p>
+      <div class="choices">${d.options.map((o, i) => `
+        <button type="button" class="choice ${V.picks[i] ? 'on' : ''}" data-i="${i}">
+          <span class="box">${V.picks[i] ? '✓' : ''}</span><span>${esc(o)}</span></button>`).join('')}
+        ${d.allowOther ? `<button type="button" class="choice ${V.otherOn ? 'on' : ''}" data-other="1">
+          <span class="box">${V.otherOn ? '✓' : ''}</span><span>Other (type your own)</span></button>
+          <input id="oth" maxlength="120" placeholder="e.g. Thu after 5pm works too" class="${V.otherOn ? '' : 'hidden'}" value="${esc(V.other)}">` : ''}
+      </div>
+      ${V.err ? `<p class="err">${esc(V.err)}</p>` : ''}
+      <button type="button" class="big" data-act="submit" ${V.busy ? 'disabled' : ''}>${V.busy ? 'Saving…' : (d.mine ? 'Update my answer' : 'Submit')}</button>
+      <p class="muted small" style="margin-top:10px">You can change your answer until ${esc(when(d.closes))}: open this link again on this phone and submit again.</p>
+    </div>
+    <div class="center"><button class="link" data-act="peek">${V.peek ? 'Hide current results' : 'Peek at current results'}</button></div>
+    <div id="peek" class="${V.peek ? '' : 'hidden'}">${V.peek ? resultsHtml(d) : ''}</div>`;
+  if (V.peek) paintChart(chartSvg(d.options, d.tallies, d.responses.length));
+}
+
+/* ===================== Results page ===================== */
+
+function renderResults(d) {
+  app.innerHTML = `<div class="card">
+      ${BOOT.done ? `<h1>Thanks${d.mine ? ', ' + esc(d.mine.name) : ''}! 🎉</h1><p>Your answer for <b>${esc(d.title)}</b> is saved.</p>`
+                  : `<h1>${esc(d.title)}</h1>`}
+      ${d.description && !BOOT.done ? `<p class="muted">${esc(d.description)}</p>` : ''}
+      <div>${timing(d)}</div>
+      <p class="muted small" style="margin-top:8px">${d.responses.length} answer${d.responses.length === 1 ? '' : 's'} so far. Results stay here until ${esc(day(d.expires))}, then everything is deleted.</p>
+      <label style="margin-top:12px">Results link (save it to check back)</label>
+      <div class="linkbox"><input readonly value="${esc(d.resultsUrl)}" onclick="this.select()">
+        <button class="ghost sm" data-act="copy" data-text="${esc(d.resultsUrl)}">Copy</button></div>
+      <div class="row" style="margin-top:12px">
+        ${d.open ? `<a class="btn ghost sm" href="${esc(pollPage())}">${d.mine ? 'Change my answer' : 'Answer this qoll'}</a>` : ''}
+        <a class="btn ghost sm" href="${esc(BOOT.base)}">Make your own qoll</a>
+      </div>
+    </div>` + resultsHtml(d);
+  paintChart(chartSvg(d.options, d.tallies, d.responses.length));
+}
+
+/* ===================== Loading ===================== */
+
+async function load(first) {
+  try {
+    const d = await call('getQoll', BOOT.q, DEVICE);
+    if (BOOT.mode === 'results') return renderResults(d);
+    V.d = d;
+    if (first) {
+      V.picks = d.mine ? d.mine.answers.map(Boolean) : d.options.map(() => false);
+      V.name = d.mine ? d.mine.name : store.get('qq_name');
+      V.other = d.mine && d.mine.other ? d.mine.other : '';
+      V.otherOn = !!V.other;
+    }
+    renderVote();
+  } catch (e) { showError(e); }
+}
+
+/* ===================== Events ===================== */
+
+const handlers = {
+  async create() {
+    C.form = { title: val('ft'), desc: val('fd'), opts: val('fo'), other: document.getElementById('fx').checked };
+    C.busy = true; C.err = ''; renderCreate();
+    try {
+      const d = await call('createQoll', { title: C.form.title, description: C.form.desc, options: C.form.opts.split('\n'), allowOther: C.form.other });
+      const mine = recentQolls();
+      mine.unshift({ title: d.title, resultsUrl: d.resultsUrl, closes: d.closes, expires: d.expires });
+      store.set('qq_mine', JSON.stringify(mine.slice(0, 20)));
+      C.form = { title: '', desc: '', opts: '', other: true }; C.busy = false;
+      renderCreated(d); window.scrollTo(0, 0);
+      return;
+    } catch (e) { C.err = errMsg(e); }
+    C.busy = false; renderCreate();
+  },
+  again() { renderCreate(); window.scrollTo(0, 0); },
+  async submit() {
+    V.name = val('nm').trim();
+    V.other = val('oth').trim();
+    if (V.otherOn && !V.other) { V.err = 'Type your suggestion in the Other box, or untick Other.'; return renderVote(); }
+    if (!V.name) { V.err = 'Please type a name (a made-up one is fine).'; return renderVote(); }
+    V.busy = true; V.err = ''; renderVote();
+    try {
+      await call('submitQoll', BOOT.q, V.name, V.picks, DEVICE, V.otherOn ? V.other : '');
+      store.set('qq_name', V.name);
+      location.href = resultsPage() + '&done=1';
+      return;
+    } catch (e) {
+      if (errMsg(e) === 'GONE') return showError(e);
+      V.err = errMsg(e);
+    }
+    V.busy = false; renderVote();
+  },
+  peek() { V.name = val('nm'); V.other = val('oth'); V.peek = !V.peek; renderVote(); if (V.peek) document.getElementById('peek').scrollIntoView({ behavior: 'smooth' }); },
+  copy(b) {
+    const text = b.dataset.text, label = b.textContent;
+    const done = () => { b.textContent = 'Copied!'; setTimeout(() => { b.textContent = label; }, 1500); };
+    const fallback = () => {
+      const ta = document.createElement('textarea'); ta.value = text; document.body.appendChild(ta); ta.select();
+      try { document.execCommand('copy'); done(); } catch (e) { toast('Copy failed. Long-press the link instead.'); }
+      ta.remove();
+    };
+    if (navigator.clipboard) navigator.clipboard.writeText(text).then(done, fallback); else fallback();
+  },
+  share(b) {
+    try { navigator.share({ title: b.dataset.title, text: b.dataset.text }).catch(() => {}); } catch (e) {}
+  }
+};
+
+app.addEventListener('click', ev => {
+  const b = ev.target.closest('button');
+  if (!b) return;
+  if (b.dataset.other) {
+    V.otherOn = !V.otherOn;
+    b.classList.toggle('on', V.otherOn);
+    b.querySelector('.box').textContent = V.otherOn ? '✓' : '';
+    const box = document.getElementById('oth');
+    box.classList.toggle('hidden', !V.otherOn);
+    if (V.otherOn) box.focus();
+    return;
+  }
+  if (b.classList.contains('choice')) {
+    const i = +b.dataset.i;
+    V.picks[i] = !V.picks[i];
+    b.classList.toggle('on', V.picks[i]);
+    b.querySelector('.box').textContent = V.picks[i] ? '✓' : '';
+    return;
+  }
+  const fn = handlers[b.dataset.act];
+  if (fn) fn(b);
+});
+
+/* ===================== Start ===================== */
+
+if (BOOT.mode === 'create') {
+  renderCreate();
+  call('info').then(i => {
+    if (i && i.mainShort) { BOOT.mainShort = i.mainShort; const el = document.getElementById('sharepg'); if (el) el.innerHTML = shareLine(); }
+  }).catch(() => {});
+}
+else {
+  load(true);
+  if (BOOT.mode === 'results') setInterval(() => { if (!document.hidden) load(false); }, 30000);
+}
+})();
+</script>
+</body>
+</html>
