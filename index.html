@@ -103,6 +103,9 @@
   .center { text-align: center; }
   .recent a { color: var(--accent); text-decoration: none; font-weight: 500; }
   .hidden { display: none; }
+  .adbox { max-width: 360px; margin: 10px auto 18px; border-radius: 18px; overflow: hidden;
+           box-shadow: 0 6px 24px rgba(0,0,0,.45); background: #000; }
+  .adbox video { display: block; width: 100%; height: auto; aspect-ratio: 9 / 16; }
 
   /* Dark grey page so the logo pops; cards stay light for easy reading */
   body { background: #2b2d31; }
@@ -326,7 +329,9 @@ function renderCreate() {
     ${mine.length ? `<div class="card recent"><h2>Qolls you made on this phone</h2>${mine.map(x => `
       <div class="pollrow"><div><b>${esc(x.title)}</b><div class="muted small">${x.closes > Date.now() ? 'Open until ' + esc(when(x.closes)) : 'Closed · results until ' + esc(day(x.expires))}</div></div>
       <a class="btn ghost sm" href="${esc(x.resultsUrl)}">Results</a></div>`).join('')}</div>` : ''}
-    <p class="muted small center" id="sharepg">${shareLine()}</p>`;
+    <p class="muted small center" id="sharepg">${shareLine()}</p>
+    <div class="center"><button class="link" data-act="ad">${C.ad ? 'Hide the ad' : '▶ Watch the 22-second ad'}</button></div>
+    ${C.ad ? `<div class="adbox"><video src="qolls-ad.mp4" poster="qolls-ad-poster.jpg" controls autoplay playsinline preload="metadata"></video></div>` : ''}`;
 }
 function shareLine() {
   return BOOT.mainShort ? `Share this page: <a href="${esc(BOOT.mainShort)}">${esc(BOOT.mainShort.split('://').pop())}</a>` : '';
@@ -440,6 +445,12 @@ const handlers = {
     C.busy = false; renderCreate();
   },
   again() { renderCreate(); window.scrollTo(0, 0); },
+  ad() {
+    C.form = { title: val('ft'), desc: val('fd'), opts: val('fo'), other: (document.getElementById('fx') || {}).checked !== false };
+    C.ad = !C.ad; renderCreate();
+    const v = document.querySelector('.adbox video');
+    if (v) { v.scrollIntoView({ behavior: 'smooth', block: 'center' }); }
+  },
   async submit() {
     V.name = val('nm').trim();
     V.other = val('oth').trim();
