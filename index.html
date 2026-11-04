@@ -123,7 +123,12 @@
   .check { display: flex; gap: 10px; align-items: flex-start; margin-top: 14px; font-size: 15px;
            color: var(--ink); cursor: pointer; }
   .check input { width: 20px; height: 20px; margin: 1px 0 0; flex-shrink: 0; accent-color: var(--accent); }
-  #oth { margin-top: 8px; }
+  .addrow { display: flex; gap: 8px; margin-top: 2px; }
+  .addrow input { flex: 1; min-width: 0; }
+  .choice .newtag { margin-left: auto; font-size: 12px; font-weight: 700; color: #7c3aed; background: #efedff;
+                    border-radius: 20px; padding: 2px 8px; }
+  button.addbtn { background: transparent; color: var(--accent); border: 2px dashed #c7d2fe; border-radius: 12px;
+                  padding: 13px; font-weight: 600; width: 100%; text-align: left; }
   .others div { padding: 8px 0; border-bottom: 1px solid var(--line); font-size: 15px; }
   .others div:last-child { border-bottom: 0; }
   .others b { font-weight: 600; }
@@ -253,22 +258,16 @@ function resultsHtml(d) {
   const top = best(d.tallies);
   const legend = d.options.map((o, i) =>
     `<div class="${top[i] ? 'best' : ''}"><span>${i + 1}. ${esc(o)}${top[i] ? ' ★' : ''}</span><span>${d.tallies[i]}</span></div>`).join('');
-  const others = d.allowOther ? d.responses.filter(r => r.other) : [];
-  const oCol = d.allowOther;
   const grid = d.responses.length ? `<div class="scroll"><table>
-      <thead><tr><th>Name</th>${d.options.map((o, i) => `<th title="${esc(o)}">${i + 1}</th>`).join('')}${oCol ? '<th>Other</th>' : ''}</tr></thead>
+      <thead><tr><th>Name</th>${d.options.map((o, i) => `<th title="${esc(o)}">${i + 1}</th>`).join('')}</tr></thead>
       <tbody>${d.responses.map(r => `<tr><td>${esc(r.name)}</td>${r.answers.map(a =>
-        `<td class="${a ? 'y' : 'n'}">${a ? '✓' : '–'}</td>`).join('')}${oCol ? `<td class="o" title="${esc(r.other)}">${r.other ? esc(r.other) : '<span class="muted">–</span>'}</td>` : ''}</tr>`).join('')}</tbody>
-      <tfoot><tr><td>Total</td>${d.tallies.map(t => `<td>${t}</td>`).join('')}${oCol ? `<td class="o">${others.length}</td>` : ''}</tr></tfoot>
+        `<td class="${a ? 'y' : 'n'}">${a ? '✓' : '–'}</td>`).join('')}</tr>`).join('')}</tbody>
+      <tfoot><tr><td>Total</td>${d.tallies.map(t => `<td>${t}</td>`).join('')}</tr></tfoot>
     </table></div>` : '<p class="muted">No answers yet.</p>';
-  const otherCard = d.allowOther ? `<div class="card"><h2>Other suggestions${others.length ? ' (' + others.length + ')' : ''}</h2>
-      ${others.length ? `<div class="others">${others.map(r => `<div><b>${esc(r.name)}:</b> ${esc(r.other)}</div>`).join('')}</div>`
-                      : '<p class="muted">No one has suggested anything else yet.</p>'}</div>` : '';
   return `<div class="card"><h2>Current results</h2>
       <img id="chartimg" class="chart" alt="Bar chart of yes votes per option">
       <div class="row" style="margin-top:8px"><a id="chartdl" class="btn ghost sm" download="qoll-results.png" style="display:none">Save chart image</a></div>
       <div class="legend">${legend}</div></div>
-    ${otherCard}
     <div class="card"><h2>Who picked what</h2>${grid}</div>`;
 }
 
@@ -322,7 +321,7 @@ function renderCreate() {
       <label for="fo">Time slots or choices, one per line</label>
       <textarea id="fo" placeholder="Tue 10am&#10;Tue 3pm&#10;Wed 12pm">${esc(f.opts)}</textarea>
       <label class="check"><input type="checkbox" id="fx" ${f.other ? 'checked' : ''}>
-        <span>Add an <b>Other</b> option, so people can type their own suggestion</span></label>
+        <span>Let people <b>add their own choices</b> (everyone after them can pick those too)</span></label>
       ${C.err ? `<p class="err">${esc(C.err)}</p>` : ''}
       <button class="big" data-act="create" ${C.busy ? 'disabled' : ''}>${C.busy ? 'Creating…' : 'Create qoll'}</button>
     </div>
@@ -358,7 +357,9 @@ function renderCreated(d) {
 
 /* ===================== Vote page ===================== */
 
-const V = { d: null, picks: [], name: '', busy: false, err: '', peek: false, otherOn: false, other: '' };
+const V = { d: null, picks: [], name: '', busy: false, err: '', peek: false, added: [], addOpen: false, addDraft: '' };
+const norm = s => String(s).toLowerCase().replace(/\s+/g, ' ').trim();
+function keepTyping() { V.name = val('nm'); if (document.getElementById('addc')) V.addDraft = val('addc'); }
 
 function renderVote() {
   const d = V.d;
@@ -377,9 +378,14 @@ function renderVote() {
       <div class="choices">${d.options.map((o, i) => `
         <button type="button" class="choice ${V.picks[i] ? 'on' : ''}" data-i="${i}">
           <span class="box">${V.picks[i] ? '✓' : ''}</span><span>${esc(o)}</span></button>`).join('')}
-        ${d.allowOther ? `<button type="button" class="choice ${V.otherOn ? 'on' : ''}" data-other="1">
-          <span class="box">${V.otherOn ? '✓' : ''}</span><span>Other (type your own)</span></button>
-          <input id="oth" maxlength="120" placeholder="e.g. Thu after 5pm works too" class="${V.otherOn ? '' : 'hidden'}" value="${esc(V.other)}">` : ''}
+        ${V.added.map((o, j) => `
+        <button type="button" class="choice on" data-added="${j}" title="Tap to remove">
+          <span class="box">✓</span><span>${esc(o)}</span><span class="newtag">new</span></button>`).join('')}
+        ${d.allowOther && d.options.length + V.added.length < d.maxOptions ? (V.addOpen ? `
+        <div class="addrow"><input id="addc" maxlength="80" placeholder="e.g. Thu 6pm" value="${esc(V.addDraft)}" enterkeyhint="done">
+          <button type="button" class="sm" data-act="addc">Add</button></div>
+        <p class="muted small" style="margin:0">Everyone who answers after you can pick it too.</p>` : `
+        <button type="button" class="addbtn" data-act="addopen">+ Add a choice</button>`) : ''}
       </div>
       ${V.err ? `<p class="err">${esc(V.err)}</p>` : ''}
       <button type="button" class="big" data-act="submit" ${V.busy ? 'disabled' : ''}>${V.busy ? 'Saving…' : (d.mine ? 'Update my answer' : 'Submit')}</button>
@@ -420,14 +426,27 @@ async function load(first) {
     if (first) {
       V.picks = d.mine ? d.mine.answers.map(Boolean) : d.options.map(() => false);
       V.name = d.mine ? d.mine.name : store.get('qq_name');
-      V.other = d.mine && d.mine.other ? d.mine.other : '';
-      V.otherOn = !!V.other;
+      V.added = []; V.addOpen = false; V.addDraft = '';
     }
     renderVote();
   } catch (e) { showError(e); }
 }
 
 /* ===================== Events ===================== */
+
+/** Adds the typed choice to this person's list (ticked). Returns false (with V.err set) if it can't. */
+function addChoice() {
+  const txt = V.addDraft.replace(/\s+/g, ' ').trim().slice(0, 80);
+  V.err = '';
+  if (!txt) return false;
+  const d = V.d;
+  const at = d.options.findIndex(o => norm(o) === norm(txt));
+  if (at >= 0) { V.picks[at] = true; V.addDraft = ''; toast('"' + d.options[at] + '" is already on the list. Ticked it for you.'); return true; }
+  if (V.added.some(o => norm(o) === norm(txt))) { V.addDraft = ''; return true; }
+  if (d.options.length + V.added.length >= d.maxOptions) { V.err = 'This qoll is full at ' + d.maxOptions + ' choices.'; return false; }
+  V.added.push(txt); V.addDraft = '';
+  return true;
+}
 
 const handlers = {
   async create() {
@@ -452,13 +471,12 @@ const handlers = {
     if (v) { v.scrollIntoView({ behavior: 'smooth', block: 'center' }); }
   },
   async submit() {
-    V.name = val('nm').trim();
-    V.other = val('oth').trim();
-    if (V.otherOn && !V.other) { V.err = 'Type your suggestion in the Other box, or untick Other.'; return renderVote(); }
+    keepTyping(); V.name = V.name.trim();
+    if (V.addDraft.trim() && !addChoice()) return renderVote();   // a typed choice not yet added counts too
     if (!V.name) { V.err = 'Please type a name (a made-up one is fine).'; return renderVote(); }
     V.busy = true; V.err = ''; renderVote();
     try {
-      await call('submitQoll', BOOT.q, V.name, V.picks, DEVICE, V.otherOn ? V.other : '');
+      await call('submitQoll', BOOT.q, V.name, V.picks, DEVICE, V.added);
       store.set('qq_name', V.name);
       location.href = resultsPage() + '&done=1';
       return;
@@ -468,7 +486,13 @@ const handlers = {
     }
     V.busy = false; renderVote();
   },
-  peek() { V.name = val('nm'); V.other = val('oth'); V.peek = !V.peek; renderVote(); if (V.peek) document.getElementById('peek').scrollIntoView({ behavior: 'smooth' }); },
+  addopen() { keepTyping(); V.addOpen = true; V.err = ''; renderVote(); const el = document.getElementById('addc'); if (el) el.focus(); },
+  addc() {
+    keepTyping();
+    if (addChoice()) { V.addOpen = false; V.addDraft = ''; }
+    renderVote();
+  },
+  peek() { keepTyping(); V.peek = !V.peek; renderVote(); if (V.peek) document.getElementById('peek').scrollIntoView({ behavior: 'smooth' }); },
   copy(b) {
     const text = b.dataset.text, label = b.textContent;
     const done = () => { b.textContent = 'Copied!'; setTimeout(() => { b.textContent = label; }, 1500); };
@@ -484,17 +508,14 @@ const handlers = {
   }
 };
 
+app.addEventListener('keydown', ev => {
+  if (ev.key === 'Enter' && ev.target.id === 'addc') { ev.preventDefault(); handlers.addc(); }
+});
 app.addEventListener('click', ev => {
   const b = ev.target.closest('button');
   if (!b) return;
-  if (b.dataset.other) {
-    V.otherOn = !V.otherOn;
-    b.classList.toggle('on', V.otherOn);
-    b.querySelector('.box').textContent = V.otherOn ? '✓' : '';
-    const box = document.getElementById('oth');
-    box.classList.toggle('hidden', !V.otherOn);
-    if (V.otherOn) box.focus();
-    return;
+  if (b.dataset.added !== undefined) {         // tapping a choice you added removes it again
+    keepTyping(); V.added.splice(+b.dataset.added, 1); renderVote(); return;
   }
   if (b.classList.contains('choice')) {
     const i = +b.dataset.i;
