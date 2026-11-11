@@ -123,6 +123,8 @@
   .check { display: flex; gap: 10px; align-items: flex-start; margin-top: 14px; font-size: 15px;
            color: var(--ink); cursor: pointer; }
   .check input { width: 20px; height: 20px; margin: 1px 0 0; flex-shrink: 0; accent-color: var(--accent); }
+  select { width: 100%; padding: 11px 12px; border: 1px solid var(--line); border-radius: 10px; font: inherit;
+           font-size: 16px; color: var(--ink); background: #fff; }
   .addrow { display: flex; gap: 8px; margin-top: 2px; }
   .addrow input { flex: 1; min-width: 0; }
   .choice .newtag { margin-left: auto; font-size: 12px; font-weight: 700; color: #7c3aed; background: #efedff;
@@ -277,9 +279,21 @@ function timing(d) {
     : `<span class="pill off">Closed ${esc(when(d.closes))}</span><span class="pill">Results kept until ${esc(day(d.expires))}</span>`;
 }
 
+/* Durations the creator can pick (must match DURATIONS in the script). */
+const DURS = {
+  '1d': { open: '24 hours', keep: '1 week' },
+  '1w': { open: '1 week',   keep: '1 month' },
+  '1m': { open: '1 month',  keep: '3 months' }
+};
+/** Works out a qoll's labels from its own dates, so older qolls still read right. */
+function durOf(d) {
+  const days = (d.closes - d.created) / 86400000;
+  return days > 8 ? DURS['1m'] : days > 1.5 ? DURS['1w'] : DURS['1d'];
+}
+
 function goneCard() {
   return `<div class="card center"><h1>This qoll is gone</h1>
-    <p class="muted">Qolls accept answers for 24 hours, and their results are deleted after 7 days. This one has expired, or the link is wrong.</p>
+    <p class="muted">Every qoll stops taking answers after the time its creator picked, and later all its results are deleted. This one has expired, or the link is wrong.</p>
     <a class="btn big" href="${esc(BOOT.base)}">Make a new qoll</a></div>`;
 }
 function showError(e) {
@@ -287,8 +301,8 @@ function showError(e) {
   app.innerHTML = m === 'GONE' ? goneCard() : `<div class="card"><h2>Something went wrong</h2><p>${esc(m)}</p></div>`;
 }
 
-function shareButtons(title, link) {
-  const msg = `Quick poll: "${title}". Tap to answer (no login, open for 24 hours):\n${link}`;
+function shareButtons(title, link, d) {
+  const msg = `Quick poll: "${title}". Tap to answer (no login, open for ${d ? durOf(d).open : '24 hours'}):\n${link}`;
   return `<div class="row" style="margin-top:10px">
     <button class="sm" data-act="copy" data-text="${esc(link)}">Copy link</button>
     <a class="btn sm" href="sms:?&body=${enc(msg)}">Text</a>
@@ -300,7 +314,11 @@ function shareButtons(title, link) {
 
 /* ===================== Create page ===================== */
 
-const C = { busy: false, err: '', form: { title: '', desc: '', opts: '', other: true } };
+const C = { busy: false, err: '', form: { title: '', desc: '', opts: '', other: true, dur: '1d' } };
+function readForm() {
+  const x = document.getElementById('fx'), u = document.getElementById('fdur');
+  C.form = { title: val('ft'), desc: val('fd'), opts: val('fo'), other: x ? x.checked : true, dur: u ? u.value : '1d' };
+}
 
 function recentQolls() {
   let list = [];
@@ -313,13 +331,15 @@ function renderCreate() {
   app.innerHTML = `<div class="card">
       <h1>Make a qoll</h1>
       <p class="muted">A quick poll to find a time that works. No login for you or the people you ask.</p>
-      <div><span class="pill warn">Open for answers for 24 hours</span><span class="pill">Results kept 7 days, then deleted</span></div>
+      <div><span class="pill warn">Open for answers for ${DURS[f.dur].open}</span><span class="pill">Results kept ${DURS[f.dur].keep}, then deleted</span></div>
       <label for="ft">What's it for?</label>
       <input id="ft" maxlength="100" placeholder="Coffee catch-up" value="${esc(f.title)}">
       <label for="fd">Description (optional)</label>
       <textarea id="fd" maxlength="400" style="min-height:70px" placeholder="Where, how long, anything people should know">${esc(f.desc)}</textarea>
       <label for="fo">Time slots or choices, one per line</label>
       <textarea id="fo" placeholder="Tue 10am&#10;Tue 3pm&#10;Wed 12pm">${esc(f.opts)}</textarea>
+      <label for="fdur">How long should it take answers?</label>
+      <select id="fdur">${Object.keys(DURS).map(k => `<option value="${k}" ${f.dur === k ? 'selected' : ''}>${DURS[k].open} (results kept ${DURS[k].keep})</option>`).join('')}</select>
       <label class="check"><input type="checkbox" id="fx" ${f.other ? 'checked' : ''}>
         <span>Let people <b>add their own choices</b> (everyone after them can pick those too)</span></label>
       ${C.err ? `<p class="err">${esc(C.err)}</p>` : ''}
@@ -343,14 +363,14 @@ function renderCreated(d) {
       <div>${timing(d)}</div>
       <h2 style="margin-top:18px">1. Send this link to everyone</h2>
       <div class="linkbox"><input readonly value="${esc(d.pollUrl)}" onclick="this.select()"></div>
-      ${shareButtons(d.title, d.pollUrl)}
+      ${shareButtons(d.title, d.pollUrl, d)}
       <h2 style="margin-top:22px">2. Keep this link to see the results</h2>
       <div class="linkbox"><input readonly value="${esc(d.resultsUrl)}" onclick="this.select()"></div>
       <div class="row" style="margin-top:10px">
         <button class="ghost sm" data-act="copy" data-text="${esc(d.resultsUrl)}">Copy results link</button>
         <a class="btn ghost sm" href="${esc(d.resultsUrl)}">Open results</a>
       </div>
-      <div class="note">Answers are accepted until <b>${esc(when(d.closes))}</b> (24 hours). Everyone can see the results until <b>${esc(day(d.expires))}</b>; after 7 days this qoll and all its answers are deleted.</div>
+      <div class="note">Answers are accepted until <b>${esc(when(d.closes))}</b> (${durOf(d).open}). Everyone can see the results until <b>${esc(day(d.expires))}</b>; after that this qoll and all its answers are deleted.</div>
     </div>
     <div class="center"><button class="link" data-act="again">Make another qoll</button></div>`;
 }
@@ -450,14 +470,14 @@ function addChoice() {
 
 const handlers = {
   async create() {
-    C.form = { title: val('ft'), desc: val('fd'), opts: val('fo'), other: document.getElementById('fx').checked };
+    readForm();
     C.busy = true; C.err = ''; renderCreate();
     try {
-      const d = await call('createQoll', { title: C.form.title, description: C.form.desc, options: C.form.opts.split('\n'), allowOther: C.form.other });
+      const d = await call('createQoll', { title: C.form.title, description: C.form.desc, options: C.form.opts.split('\n'), allowOther: C.form.other, duration: C.form.dur });
       const mine = recentQolls();
       mine.unshift({ title: d.title, resultsUrl: d.resultsUrl, closes: d.closes, expires: d.expires });
       store.set('qq_mine', JSON.stringify(mine.slice(0, 20)));
-      C.form = { title: '', desc: '', opts: '', other: true }; C.busy = false;
+      C.form = { title: '', desc: '', opts: '', other: true, dur: '1d' }; C.busy = false;
       renderCreated(d); window.scrollTo(0, 0);
       return;
     } catch (e) { C.err = errMsg(e); }
@@ -465,7 +485,7 @@ const handlers = {
   },
   again() { renderCreate(); window.scrollTo(0, 0); },
   ad() {
-    C.form = { title: val('ft'), desc: val('fd'), opts: val('fo'), other: (document.getElementById('fx') || {}).checked !== false };
+    readForm();
     C.ad = !C.ad; renderCreate();
     const v = document.querySelector('.adbox video');
     if (v) { v.scrollIntoView({ behavior: 'smooth', block: 'center' }); }
@@ -508,6 +528,9 @@ const handlers = {
   }
 };
 
+app.addEventListener('change', ev => {     // picking a duration updates the pills at the top
+  if (ev.target.id === 'fdur') { readForm(); renderCreate(); }
+});
 app.addEventListener('keydown', ev => {
   if (ev.key === 'Enter' && ev.target.id === 'addc') { ev.preventDefault(); handlers.addc(); }
 });
