@@ -231,6 +231,10 @@ const resultsPage = () => BOOT.base + '?q=' + BOOT.q + '&v=r';
 
 function best(t) { const m = Math.max(0, ...t); return t.map(x => m > 0 && x === m); }
 
+/** Bar colours: top choice green; 0–1 votes red; 2 votes pink; everything else blue. */
+function barColor(t, win) { return win ? '#16a34a' : t <= 1 ? '#ef4444' : t === 2 ? '#f472b6' : '#93c5fd'; }
+function countColor(t, win) { return win ? '#16a34a' : t <= 1 ? '#dc2626' : t === 2 ? '#db2777' : '#1c2230'; }
+
 function chartSvg(options, tallies, total) {
   if (options.length > 10) return chartSvgRows(options, tallies, total);
   const n0 = options.length, L = 34, R = 10, T = 52, B = 50, H = 290;
@@ -250,8 +254,8 @@ function chartSvg(options, tallies, total) {
   }
   tallies.forEach((t, i) => {
     const cx = L + slot * i + slot / 2;
-    if (t > 0) s += `<rect x="${cx - bw / 2}" y="${y(t)}" width="${bw}" height="${(t / maxY) * ph}" rx="5" fill="${top[i] ? '#16a34a' : '#93c5fd'}"/>`;
-    s += `<text x="${cx}" y="${y(t) - 8}" ${font} font-size="16" font-weight="700" fill="#1c2230" text-anchor="middle">${t}</text>` +
+    if (t > 0) s += `<rect x="${cx - bw / 2}" y="${y(t)}" width="${bw}" height="${(t / maxY) * ph}" rx="5" fill="${barColor(t, top[i])}"/>`;
+    s += `<text x="${cx}" y="${y(t) - 8}" ${font} font-size="16" font-weight="700" fill="${countColor(t, top[i])}" text-anchor="middle">${t}</text>` +
       `<text x="${cx}" y="${H - B + 22}" ${font} font-size="16" font-weight="600" fill="${top[i] ? '#16a34a' : '#1c2230'}" text-anchor="middle">${i + 1}${top[i] ? ' ★' : ''}</text>`;
   });
   return s + `<text x="${L + pw / 2}" y="${H - 8}" ${font} font-size="12" fill="#6b7280" text-anchor="middle">Option number (see list below)</text></svg>`;
@@ -272,9 +276,9 @@ function chartSvgRows(options, tallies, total) {
     const y = T + i * RH, mid = y + RH / 2, win = top[i];
     if (i % 2) s += `<rect x="0" y="${y}" width="${W}" height="${RH}" fill="#f8fafc"/>`;
     s += `<text x="${LX}" y="${mid + 4}" ${font} font-size="12" fill="${win ? '#16a34a' : '#1c2230'}" font-weight="${win ? 700 : 400}">${i + 1}. ${esc(short(options[i]))}</text>`;
-    const w = t > 0 ? Math.max(3, (t / maxV) * BMAX) : 0;
-    if (w) s += `<rect x="${BX}" y="${y + 5}" width="${w}" height="${RH - 10}" rx="3" fill="${win ? '#16a34a' : '#93c5fd'}"/>`;
-    s += `<text x="${BX + w + 6}" y="${mid + 4.5}" ${font} font-size="13" font-weight="700" fill="#1c2230">${t}${win ? ' ★' : ''}</text>`;
+    const w = t > 0 ? Math.max(4, (t / maxV) * BMAX) : 3;    // 0 votes: a thin red stub so it still shows
+    s += `<rect x="${BX}" y="${y + 5}" width="${w}" height="${RH - 10}" rx="${t > 0 ? 3 : 1}" fill="${barColor(t, win)}"/>`;
+    s += `<text x="${BX + w + 6}" y="${mid + 4.5}" ${font} font-size="13" font-weight="700" fill="${countColor(t, win)}">${t}${win ? ' ★' : ''}</text>`;
   });
   return s + '</svg>';
 }
